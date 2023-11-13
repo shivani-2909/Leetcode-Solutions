@@ -1,26 +1,32 @@
-class Solution {
+public class Solution {
     public String sortVowels(String s) {
-        // Step 1: Collect vowels and sort them in descending order
-        List<Character> vowels = new ArrayList<>();
-        for (char c : s.toCharArray()) {
-            if ("aeiouAEIOU".indexOf(c) != -1) {
-                vowels.add(c);
-            }
-        }
-        Collections.sort(vowels, Collections.reverseOrder());
+        int[] vowelCount = new int[11];
+        int[] countIndexMap = new int[128];
+        char[] result = s.toCharArray();
+        char[] charMap = "AEIOUaeiou".toCharArray();
 
-        // Step 2: Construct the answer string by replacing vowels in sorted order
-        StringBuilder result = new StringBuilder();
-        for (char c : s.toCharArray()) {
-            if ("aeiouAEIOU".indexOf(c) != -1) {
-                result.append(vowels.get(vowels.size() - 1));
-                vowels.remove(vowels.size() - 1);
-            } else {
-                result.append(c);
-            }
-        }
+        for (int i = 0; i < charMap.length; i++) 
+            countIndexMap[charMap[i]] = i + 1;
 
-        // Step 3: Return the final string
-        return result.toString();        
+        for (char c : result) 
+            vowelCount[countIndexMap[c]]++;
+        int j = 1;
+        int i = 0;
+
+        while (j < vowelCount.length) {
+            if (vowelCount[j] > 0)
+                while (i < result.length) {
+                    if (countIndexMap[result[i]] == 0) {
+                        i++;
+                        continue;
+                    }
+                    vowelCount[j]--;
+                    result[i++] = charMap[j - 1];
+                    break;
+                }
+            else
+                j++;  
+        }
+        return new String(result);
     }
 }
