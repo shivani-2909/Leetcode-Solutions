@@ -15,25 +15,16 @@
  */
 class Solution {
     public List<Integer> inorderTraversal(TreeNode root) {
-        Deque<TreeNode> stack = new ArrayDeque<>(101);
-        List<Integer> result = new ArrayList<>(101);
-        Set<TreeNode> visitedLeft = new HashSet<>();
+        List<Integer> res = new ArrayList<>();
+        helper(root, res);
+        return res;
+    }
+
+    public void helper(TreeNode root, List<Integer> res) {
         if (root != null) {
-            stack.offer(root);
-        }
-        while (!stack.isEmpty()) {
-            TreeNode node = stack.peekLast();
-            while (node.left != null && !visitedLeft.contains(node)) {
-                stack.offer(node.left);
-                visitedLeft.add(node);
-                node = node.left;
-            }
-            result.add(node.val);
-            stack.pollLast();
-            if (node.right != null) {
-                stack.offer(node.right);
-            }
-        }
-        return result;   
+            helper(root.left, res);
+            res.add(root.val);
+            helper(root.right, res);
+        } 
     }
 }
