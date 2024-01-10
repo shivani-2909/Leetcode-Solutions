@@ -14,51 +14,51 @@
  * }
  */
 class Solution {
-    private Map<Integer, List<Integer>> adjacencyList = new HashMap<>();
-
     public int amountOfTime(TreeNode root, int start) {
-        convertToGraph(root);
-        Deque<Integer> queue = new ArrayDeque<>();
+        Map<Integer, Set<Integer>> map = new HashMap<>();
+        convert(root, 0, map);
+        Queue<Integer> q = new LinkedList<>();
+        q.add(start);
+        int minute = 0;
         Set<Integer> visited = new HashSet<>();
-      
-        queue.offer(start);
-        int time = -1; 
-      
-        while (!queue.isEmpty()) {
-            time++;
-            for (int i = queue.size(); i > 0; i--) {
-                int currentNode = queue.pollFirst();
-                visited.add(currentNode);
-              
-                if (adjacencyList.containsKey(currentNode)) {
-                    for (int neighbor : adjacencyList.get(currentNode)) {
-                        if (!visited.contains(neighbor)) {
-                            queue.offer(neighbor);
-                        }
+        visited.add(start);
+
+        while (!q.isEmpty()) {
+            int levelSize = q.size();
+            while (levelSize > 0) {
+                int current = q.poll();
+
+                for (int num : map.get(current)) {
+                    if (!visited.contains(num)) {
+                        visited.add(num);
+                        q.add(num);
                     }
                 }
+                levelSize--;
             }
+            minute++;
         }
-        return time;
+        return minute - 1;
     }
 
-    private void convertToGraph(TreeNode node) {
-        if (node == null) {
+    void convert(TreeNode current, int parent, Map<Integer, Set<Integer>> map) {
+        if (current == null) {
             return;
+        } 
+        if (!map.containsKey(current.val)) {
+            map.put(current.val, new HashSet<>());
         }
-      
-        if (node.left != null) {
-            adjacencyList.computeIfAbsent(node.val, k -> new ArrayList<>()).add(node.left.val);
-            adjacencyList.computeIfAbsent(node.left.val, k -> new ArrayList<>()).add(node.val);
+        Set<Integer> adjacentList = map.get(current.val);
+        if (parent != 0) {
+            adjacentList.add(parent);
+        } 
+        if (current.left != null) {
+            adjacentList.add(current.left.val);
+        } 
+        if (current.right != null) {
+            adjacentList.add(current.right.val);
         }
-      
-        if (node.right != null) {
-            adjacencyList.computeIfAbsent(node.val, k -> new ArrayList<>()).add(node.right.val);
-            adjacencyList.computeIfAbsent(node.right.val, k -> new ArrayList<>()).add(node.val);
-        }
-      
-        
-        convertToGraph(node.left);
-        convertToGraph(node.right);
+        convert(current.left, current.val, map);
+        convert(current.right, current.val, map);
     }
 }
