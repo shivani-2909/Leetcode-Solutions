@@ -20,8 +20,8 @@ class Solution {
             if(node == destination){
                 return true;
             }
-            
-            for(int neighbor:graph.getOrDefault(node, new ArrayList<>())){
+            List<Integer> neighbors = graph.getOrDefault(node, new ArrayList<>());
+            for(int neighbor:neighbors){
                 if(!visited.contains(neighbor)){
                     visited.add(neighbor);
                     queue.offer(neighbor);
