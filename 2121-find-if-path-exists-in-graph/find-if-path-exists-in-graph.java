@@ -9,23 +9,26 @@ class Solution {
             graph.computeIfAbsent(v,k -> new ArrayList<>()).add(u);
         }
         
+        Queue<Integer> queue = new LinkedList<>();
         Set<Integer> visited = new HashSet<>();
-        return dfs(source, destination, graph, visited);
-    }
-    public boolean dfs(int node, int destination, Map<Integer,List<Integer>> graph,Set<Integer> visited){
-        //BC
-        if(node == destination){
-            return true;
-        }
-        visited.add(node);
         
-        for(int neighbor : graph.getOrDefault(node,new ArrayList<>())){
-            if(!visited.contains(neighbor)){
-                if(dfs(neighbor,destination,graph,visited)){
-                    return true;
+        queue.offer(source);
+        visited.add(source);
+        
+        while(!queue.isEmpty()){
+            int node = queue.poll();
+            if(node == destination){
+                return true;
+            }
+            List<Integer> neighbors = graph.getOrDefault(node, new ArrayList<>());
+            for(int neighbor:neighbors){
+                if(!visited.contains(neighbor)){
+                    visited.add(neighbor);
+                    queue.offer(neighbor);
                 }
             }
         }
         return false;
     }
+    
 }
